@@ -1,0 +1,24 @@
+<?php
+
+
+namespace bin;
+
+array_map(
+    function ($autoloadFile) {
+        if (is_file($autoloadFile)) {
+            include $autoloadFile;
+        }
+    },
+    [
+        __DIR__ . '/../vendor/autoload.php',
+        __DIR__ . '/../../vendor/autoload.php',
+        __DIR__ . '/../../../vendor/autoload.php'
+    ]
+);
+
+use Async\AsyncChildCommand;
+use Symfony\Component\Console\Application;
+
+$application = new Application();
+$application->add(new AsyncChildCommand());
+$application->run();
