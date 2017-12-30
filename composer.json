@@ -1,6 +1,6 @@
 {
   "name": "krowinski/async",
-  "description": "async callable calls",
+  "description": "Run php closure asynchronously",
   "keywords": [
     "php", "async"
   ],
