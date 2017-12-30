@@ -2,7 +2,7 @@
   "name": "krowinski/async",
   "description": "async callable calls",
   "keywords": [
-    "php"
+    "php", "async"
   ],
   "type": "library",
   "require": {

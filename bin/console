@@ -11,8 +11,7 @@ array_map(
     },
     [
         __DIR__ . '/../vendor/autoload.php',
-        __DIR__ . '/../../vendor/autoload.php',
-        __DIR__ . '/../../../vendor/autoload.php'
+        __DIR__ . '/../../../../vendor/autoload.php'
     ]
 );
 
