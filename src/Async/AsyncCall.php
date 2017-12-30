@@ -71,7 +71,10 @@ class AsyncCall
 
         //echo $process->getCommandLine() . PHP_EOL;
 
-        self::$processList[] = $process;
+        // register and wait for process that have callbacks
+        if (null !== $callback) {
+            self::$processList[] = $process;
+        }
     }
 
     private static function registerShutdownFunction()

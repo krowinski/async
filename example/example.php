@@ -14,6 +14,7 @@ $s = microtime(true);
 AsyncCall::run(
     function () {
         sleep(2);
+        // there is no callback so echo will not be showed
         echo 'sleep 2s' . PHP_EOL;
     }
 );
@@ -21,22 +22,30 @@ AsyncCall::run(
 AsyncCall::run(
     function () {
         sleep(1);
+        // echo will be catched in child process and returned by callback
         echo 'sleep 1s' . PHP_EOL;
+    },
+    function ($msg) { echo $msg; }
+);
+
+AsyncCall::run(
+    function () {
+        throw new \Exception('bar');
     }
 );
 
 AsyncCall::run(
     function () {
-        throw new \Exception('test');
-    }
+        throw new \Exception('foo');
+    },
+    function () {},
+    function (\Exception $error) { assert($error->getMessage() === 'foo'); }
 );
+
 
 AsyncCall::run(
     function () {
-        /**
-         * @param $url
-         * @return mixed
-         */
+        // if this is in parent, child will not see this
         function getPage($url)
         {
             $ch = curl_init();
