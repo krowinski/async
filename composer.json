@@ -1,28 +1,28 @@
 {
-    "name": "krowinski/async",
-    "description": "CLI only, async calls using pcntl lib",
-    "keywords": [
-        "php"
-    ],
-    "type": "library",
-    "require": {
-        "php": ">=5.6",
-        "ext-pcntl": "*",
-        "symfony/process": "^3.4",
-        "symfony/console": "^3.4",
-      "jeremeamia/superclosure": "^2.3"
-    },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Kacper Rowiński",
-            "email": "kacper.rowinski@gmail.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Async\\": "src/Async/"
-        }
-    },
-    "minimum-stability": "stable"
+  "name": "krowinski/async",
+  "description": "async callable calls",
+  "keywords": [
+    "php"
+  ],
+  "type": "library",
+  "require": {
+    "php": ">=5.6",
+    "ext-pcntl": "*",
+    "symfony/process": "^3.4",
+    "symfony/console": "^3.4",
+    "jeremeamia/superclosure": "^2.3"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Kacper Rowiński",
+      "email": "kacper.rowinski@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Async\\": "src/Async/"
+    }
+  },
+  "minimum-stability": "stable"
 }
