@@ -22,10 +22,10 @@ AsyncCall::run(
 AsyncCall::run(
     function () {
         sleep(1);
-        // echo will be catched in child process and returned by callback
+        // echo will be catched in child process and returned as echo in parent process ( but empty callback MUST be set )
         echo 'sleep 1s' . PHP_EOL;
     },
-    function ($msg) { echo $msg; }
+    function () { }
 );
 
 AsyncCall::run(
