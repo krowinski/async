@@ -47,24 +47,25 @@ class AsyncCall
         $process = new Process(self::CONSOLE_EXECUTE . $jobEncoded);
         $process->start(
             function ($type, $buffer) use ($callback, $onError) {
-                try {
 
+                // if we can't decode probably child failed to execute
+                if ($decoded = base64_decode($buffer, true)) {
                     /** @var AsyncChildResponse $asyncChildResponse */
-                    $asyncChildResponse = unserialize(base64_decode($buffer));
+                    $asyncChildResponse = unserialize($decoded);
+                } else {
+                    throw new \RuntimeException('Child process returned: ' . $buffer);
+                }
 
-                    if (null !== $onError && $asyncChildResponse->getError()) {
-                        $onError($asyncChildResponse->getError());
-                    }
+                if (null !== $onError && $asyncChildResponse->getError()) {
+                    $onError($asyncChildResponse->getError());
+                }
 
-                    if (null !== $callback) {
-                        $callback($asyncChildResponse->getJobResult());
-                    }
+                if (null !== $callback) {
+                    $callback($asyncChildResponse->getJobResult());
+                }
 
-                    if (null !== $asyncChildResponse->getOb()) {
-                        echo $asyncChildResponse->getOb();
-                    }
-                } catch (\Exception $exception) {
-                    $onError($exception);
+                if (null !== $asyncChildResponse->getOb()) {
+                    echo $asyncChildResponse->getOb();
                 }
             }
         );
