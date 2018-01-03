@@ -17,3 +17,11 @@ I serialise callable function and sent to child process by exec. To get callback
 
 ### Example ?
 Sure take a look - https://github.com/krowinski/async/blob/master/example/example.php
+
+### Supports M$ Windows?
+NO.
+
+### TODO 
+- process limit
+- timeouts 
+- tests
