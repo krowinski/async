@@ -35,6 +35,9 @@ class AsyncChildCommand extends Command
         $this->serializer = new Serializer();
     }
 
+    /**
+     * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
+     */
     protected function configure()
     {
         $this
@@ -52,9 +55,9 @@ class AsyncChildCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $job = $this->serializer->unserialize(base64_decode($input->getArgument(self::PARAM_NAME_JOB)));
-
         try {
+            $job = $this->serializer->unserialize(base64_decode($input->getArgument(self::PARAM_NAME_JOB)));
+
             ob_start();
             $jobResults = $job();
             $ob = ob_get_clean();

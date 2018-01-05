@@ -12,8 +12,8 @@ I serialise callable function and sent to child process by exec. To get callback
 - Some resource/function/data must be passed directly to closure
 
 ### Some research
-* https://www.phproundtable.com/episode/asynchronous-php - good start to "know how" make php async
-* https://amphp.org/ - non-blocking framework for PHP
+- https://www.phproundtable.com/episode/asynchronous-php - good start to "know how" make php async
+- https://amphp.org/ - non-blocking framework for PHP
 
 ### Example ?
 Sure take a look - https://github.com/krowinski/async/blob/master/example/example.php
@@ -22,6 +22,4 @@ Sure take a look - https://github.com/krowinski/async/blob/master/example/exampl
 NO.
 
 ### TODO 
-- process limit
-- timeouts 
 - tests

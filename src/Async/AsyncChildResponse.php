@@ -16,7 +16,7 @@ class AsyncChildResponse
     /**
      * @var string
      */
-    private $ob;
+    private $stdout;
     /**
      * @var \Exception
      */
@@ -25,13 +25,13 @@ class AsyncChildResponse
     /**
      * AsyncChildResponse constructor.
      * @param mixed $jobResult
-     * @param string $ob
+     * @param string $stdout
      * @param \Exception $error
      */
-    public function __construct($jobResult, $ob = null, \Exception $error = null)
+    public function __construct($jobResult, $stdout = null, \Exception $error = null)
     {
         $this->jobResult = $jobResult;
-        $this->ob = $ob;
+        $this->stdout = $stdout;
         $this->error = $error;
     }
 
@@ -46,9 +46,9 @@ class AsyncChildResponse
     /**
      * @return string
      */
-    public function getOb()
+    public function getStdOut()
     {
-        return $this->ob;
+        return $this->stdout;
     }
 
     /**
