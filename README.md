@@ -1,5 +1,6 @@
 # async
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/krowinski/async/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/krowinski/async/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/krowinski/async/badges/build.png?b=master)](https://scrutinizer-ci.com/g/krowinski/async/build-status/master)
 [![Code Coverage](https://scrutinizer-ci.com/g/krowinski/async/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/krowinski/async/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/krowinski/async/version)](https://packagist.org/packages/krowinski/async) 
