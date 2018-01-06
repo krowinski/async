@@ -1,3 +1,10 @@
+# async
+
+[![Build Status](https://scrutinizer-ci.com/g/krowinski/async/badges/build.png?b=master)](https://scrutinizer-ci.com/g/krowinski/async/build-status/master)
+[![Code Coverage](https://scrutinizer-ci.com/g/krowinski/async/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/krowinski/async/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/krowinski/async/version)](https://packagist.org/packages/krowinski/async) 
+[![Latest Unstable Version](https://poser.pugx.org/krowinski/async/v/unstable)](//packagist.org/packages/krowinski/async) 
+[![Total Downloads](https://poser.pugx.org/krowinski/async/downloads)](https://packagist.org/packages/krowinski/async)
 
 ### How this work?
 Well its basically "exec" with serialised closure. "Dressed" in nice libs like symfony process and console.
