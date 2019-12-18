@@ -1,14 +1,11 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Async;
 
+use RuntimeException;
 use Symfony\Component\Process\Process;
 
-/**
- * Class AsyncProcess
- * @package Async
- */
 class AsyncProcess extends Process
 {
     /**
@@ -20,27 +17,21 @@ class AsyncProcess extends Process
      */
     private $hasOnErrorSet;
 
-    /**
-     * @param callable|null $callback
-     * @param callable|null $onError
-     * @throws \RuntimeException
-     * @throws \Symfony\Component\Process\Exception\RuntimeException
-     * @throws \Symfony\Component\Process\Exception\LogicException
-     */
-    public function startJob(callable $callback = null, callable $onError = null)
-    {
+    public function startJob(
+        callable $callback = null,
+        callable $onError = null
+    ): void {
         $this->hasCallbackSet = null !== $callback;
         $this->hasOnErrorSet = null !== $callback;
 
         $this->start(
-            function ($type, $buffer) use ($callback, $onError) {
-
+            static function (string $type, string $buffer) use ($callback, $onError) {
                 // if we can't decode probably child failed to execute
                 if ($decoded = base64_decode($buffer, true)) {
                     /** @var AsyncChildResponse $asyncChildResponse */
-                    $asyncChildResponse = unserialize($decoded);
+                    $asyncChildResponse = unserialize($decoded, [false]);
                 } else {
-                    throw new \RuntimeException('Child process returned: ' . $buffer);
+                    throw new RuntimeException('Child process returned: ' . $buffer);
                 }
 
                 if (null !== $onError && $asyncChildResponse->getError()) {
@@ -54,18 +45,12 @@ class AsyncProcess extends Process
         );
     }
 
-    /**
-     * @return bool
-     */
-    public function hasCallbackSet()
+    public function hasCallbackSet(): bool
     {
         return $this->hasCallbackSet;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasOnErrorSet()
+    public function hasOnErrorSet(): bool
     {
         return $this->hasOnErrorSet;
     }

@@ -26,6 +26,13 @@ I serialise callable function and sent to child process by exec. To get callback
 ### Example ?
 Sure take a look - https://github.com/krowinski/async/blob/master/example/example.php
 
+### User cases (mostly some code on website that user don't need to wait for)
+- send callback
+- publish to queue amqp
+- send external analytic data
+- remove files 
+- process payments
+
 ### Supports M$ Windows?
 NO.
 

@@ -1,18 +1,14 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Async;
 
 use SuperClosure\Serializer;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 
-/**
- * Class AsyncCall
- * @package Async
- */
 class AsyncCall
 {
-    const CONSOLE_EXECUTE = 'php ' . __DIR__ . '/../../bin/console app:run-child-process ';
+    private const CONSOLE_LOCATION = __DIR__ . '/../../bin/console';
 
     /**
      * @var bool
@@ -30,37 +26,23 @@ class AsyncCall
      * @var int
      */
     private static $processesLimit = 0;
+    private static $processAmount = 0;
 
-    /**
-     * @param $processesLimit
-     * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
-     */
-    public static function setProcessLimit($processesLimit)
+    public static function setProcessLimit(int $processesLimit): void
     {
         if ($processesLimit < 0) {
-            throw new InvalidArgumentException('Processes limit Must be possitive itiger');
+            throw new InvalidArgumentException('Processes limit Must be positive integer');
         }
-        self::$processesLimit = (int)$processesLimit;
+        self::$processesLimit = $processesLimit;
     }
 
-    /**
-     * @param callable $job
-     * @param callable $callback
-     * @param callable $onError
-     * @param float $timeout
-     * @param float $idleTimeout
-     * @throws \Symfony\Component\Process\Exception\InvalidArgumentException
-     * @throws \Symfony\Component\Process\Exception\RuntimeException
-     * @throws \Symfony\Component\Process\Exception\LogicException
-     * @throws \RuntimeException
-     */
     public static function run(
         callable $job,
         callable $callback = null,
         callable $onError = null,
-        $timeout = null,
-        $idleTimeout = null
-    ) {
+        float $timeout = null,
+        float $idleTimeout = null
+    ): void {
         self::registerShutdownFunction();
 
         if (!self::$serializer) {
@@ -68,24 +50,30 @@ class AsyncCall
         }
 
         // we got process limit so wait for them to finish
-        if (0 !== self::$processesLimit && self::$processesLimit >= count(self::$processList)) {
+        if (0 !== self::$processesLimit && self::$processesLimit >= self::$processAmount) {
             self::waitForProcessesToFinish(self::$processesLimit);
         }
 
-        $process = new AsyncProcess(self::CONSOLE_EXECUTE . base64_encode(self::$serializer->serialize($job)));
+        $process = new AsyncProcess(
+            [
+                self::CONSOLE_LOCATION,
+                AsyncChildCommand::COMMAND_NAME,
+                base64_encode(self::$serializer->serialize($job))
+            ]
+        );
         $process->setTimeout($timeout);
         $process->setIdleTimeout($idleTimeout);
         $process->startJob($callback, $onError);
 
-        //echo $process->getCommandLine() . PHP_EOL;
         self::$processList[] = $process;
+        self::$processAmount++;
     }
 
-    private static function registerShutdownFunction()
+    private static function registerShutdownFunction(): void
     {
         if (!self::$shutdownFunctionRegistered) {
             register_shutdown_function(
-                function () {
+                static function () {
                     self::waitForProcessesToFinish();
                 }
             );
@@ -93,24 +81,21 @@ class AsyncCall
         }
     }
 
-    /**
-     * @param int $maxProcessToWait
-     */
-    private static function waitForProcessesToFinish($maxProcessToWait = 0)
+    private static function waitForProcessesToFinish(int $maxProcessToWait = 0): void
     {
-        while (true) {
-            $processAmount = count(self::$processList);
-
-            if (0 === $processAmount) {
-                break;
-            }
-            if ($maxProcessToWait > $processAmount) {
+        for (; ;) {
+            if (0 === self::$processAmount || $maxProcessToWait > self::$processAmount) {
                 break;
             }
 
             foreach (self::$processList as $i => $process) {
-                if ($process->getStatus() === AsyncProcess::STATUS_TERMINATED || (!$process->hasCallbackSet() && !$process->hasOnErrorSet())) {
+                if (
+                    $process->getStatus() === AsyncProcess::STATUS_TERMINATED ||
+                    (!$process->hasCallbackSet() && !$process->hasOnErrorSet())
+                ) {
                     unset(self::$processList[$i]);
+                    self::$processAmount--;
+
                     continue;
                 }
             }

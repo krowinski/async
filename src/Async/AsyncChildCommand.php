@@ -1,59 +1,29 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Async;
 
-
+use Exception;
 use SuperClosure\Serializer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Class AsyncChildCommand
- * @package Async
- */
 class AsyncChildCommand extends Command
 {
-    const PARAM_NAME_JOB = 'job';
-
-    /**
-     * @var Serializer
-     */
+    public const COMMAND_NAME = 'app:run-child-process';
+    private const PARAM_NAME_JOB = 'job';
     private $serializer;
 
-    /**
-     * AsyncChildCommand constructor.
-     * @param null $name
-     * @throws \Symfony\Component\Console\Exception\LogicException
-     */
-    public function __construct($name = null)
+    public function __construct(?string $name = null)
     {
         parent::__construct($name);
 
         $this->serializer = new Serializer();
     }
 
-    /**
-     * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
-     */
-    protected function configure()
-    {
-        $this
-            ->setName('app:run-child-process')
-            ->setDescription('Runs a child process.')
-            ->addArgument(self::PARAM_NAME_JOB, InputArgument::REQUIRED, 'Serialized callback job param.');
-    }
-
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
-     * @throws \SuperClosure\Exception\ClosureUnserializationException
-     */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $job = $this->serializer->unserialize(base64_decode($input->getArgument(self::PARAM_NAME_JOB)));
@@ -62,7 +32,7 @@ class AsyncChildCommand extends Command
             $jobResults = $job();
             $ob = ob_get_clean();
             $error = null;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $jobResults = null;
             $ob = null;
             $error = $exception;
@@ -71,5 +41,13 @@ class AsyncChildCommand extends Command
         $output->writeln(base64_encode(serialize(new AsyncChildResponse($jobResults, $ob, $error))));
 
         return 0;
+    }
+
+    protected function configure(): void
+    {
+        $this
+            ->setName(self::COMMAND_NAME)
+            ->setDescription('Runs a child process.')
+            ->addArgument(self::PARAM_NAME_JOB, InputArgument::REQUIRED, 'Serialized callback job param.');
     }
 }

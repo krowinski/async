@@ -1,11 +1,13 @@
+#!/usr/bin/env php
 <?php
-
+declare(strict_types=1);
 
 namespace bin;
 
 array_map(
-    function ($autoloadFile) {
+    static function ($autoloadFile) {
         if (is_file($autoloadFile)) {
+            /** @noinspection PhpIncludeInspection */
             include $autoloadFile;
         }
     },

@@ -1,17 +1,19 @@
 <?php
-
+/** @noinspection PhpComposerExtensionStubsInspection */
+declare(strict_types=1);
 
 namespace bin;
-
 
 include __DIR__ . '/../vendor/autoload.php';
 
 use Async\AsyncCall;
+use Exception;
+use RuntimeException;
 
 $s = microtime(true);
 
 AsyncCall::run(
-    function () {
+    static function () {
         sleep(2);
         // there is no callback so echo will not be showed and parent process will not w8
         echo 'sleep 2s' . PHP_EOL;
@@ -19,36 +21,36 @@ AsyncCall::run(
 );
 
 AsyncCall::run(
-    function () {
+    static function () {
         sleep(4);
         // echo will be catched in child process and returned as second parameter $stdOut
         echo 'sleep 4s' . PHP_EOL;
     },
-    function ($results, $stdOut) {
+    static function ($results, $stdOut) {
         echo $stdOut;
     }
 );
 
 AsyncCall::run(
-    function () {
-        throw new \RuntimeException('bar');
+    static function () {
+        throw new RuntimeException('bar');
     }
 );
 
 AsyncCall::run(
-    function () {
-        throw new \RuntimeException('foo');
+    static function () {
+        throw new RuntimeException('foo');
     },
-    function () {
+    static function () {
     },
-    function (\Exception $error) {
+    static function (Exception $error) {
         // we will get error
         assert($error->getMessage() === 'foo');
     }
 );
 
 AsyncCall::run(
-    function () {
+    static function () {
         // if this is in parent, child will not see this
         function getPage($url)
         {
@@ -64,7 +66,7 @@ AsyncCall::run(
         // this will be returned to callback as first parameter
         return getPage('example.com');
     },
-    function ($results) {
+    static function ($results) {
         echo $results;
     }
 );
@@ -77,10 +79,10 @@ $i = 10;
 while ($i--) {
     // this will start 2 process and then wait them to finish before starting second one
     AsyncCall::run(
-        function () {
+        static function () {
             sleep(1);
         },
-        function () {
+        static function () {
         }
     );
 }
@@ -89,5 +91,6 @@ AsyncCall::setProcessLimit(0);
 
 
 echo PHP_EOL;
+echo 'Script ended: ';
 echo microtime(true) - $s;
 echo PHP_EOL;
